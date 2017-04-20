@@ -1,0 +1,89 @@
+#class 和 id 的使用场景?
+1. 在CSS文件里书写时，ID加前缀"#"；CLASS用"."
+2. id一个页面只可以使用一次；class可以多次引用。
+3. ID是一个标签，用于区分不同的结构和内容，就象名字，如果一个屋子有2个人同名，就会出现混淆；class是一个样式，可以套在任何结构和内容上，就象一件衣服；
+4. 从概念上说就是不一样的：id是先找到结构/内容，再给它定义样式；class是先定义好一种样式，再套给多个结构/内容。
+5. 目前的浏览器还都允许用多个相同ID，一般情况下也能正常显示，不过当你需要用JavaScript通过id来控制div时就会出现错误。
+#CSS选择器常见的有几种?
+1. 基础选择器
+-*通用元素选择器，匹配页面任何元素（这也就决定了我们很少使用）
+-#id id选择器，匹配特定id的元素
+-.class	类选择器，匹配class包含(不是等于)特定类的元素
+-element	标签选择器
+2. 组合选择器
+ -E,F	多元素选择器，用,分隔，同时匹配元素E或元素F
+ -E F	后代选择器，用空格分隔，匹配E元素所有的后代（不只是子元素、子元素向下递归）元素F
+ -E>F	子元素选择器，用>分隔，匹配E元素的所有直接子元素
+ -E+F	直接相邻选择器，匹配E元素之后的相邻的同级元素F
+ -E~F	普通相邻选择器（弟弟选择器），匹配E元素之后的同级元素F（无论直接相邻与否）
+ -.class1.class2	id和class选择器和选择器连写的时候中间没有分隔符，.和 # 本身充当分隔符的元素
+ -element#id	id和class选择器和选择器连写的时候中间没有分隔符，.和 #本身充当分隔符的元素
+3. 属性选择器
+ -E[attr]	匹配所有具有属性为attr的元素（div[id]能选择所有具有id属性的div）
+ -E[attr=value]	匹配所有属性为value的元素（div[type=text]匹配id=text的div）
+ -E[attr~=value]	匹配所有属性attr具有多个空格分隔，其中一个值等于value的元素
+ -E[attr ^=value]	匹配属性attr的值以value开头的元素
+ -E[attr $=value]	匹配属性attr的值以value结尾的元素
+ -E[attr *=value]	匹配属性attr的值包含value的元素
+4. 伪类选择器
+ -E:first-child	匹配元素E的第一个子元素
+ -E:last-child	匹配元素e的最后一个子元素
+ -E:nth-child(n)	匹配其父元素的第n个子元素，第一个编号为1
+ -E:first-of-type	匹配父元素下使用同种标签的第一个子元素，等同于nth-of-type(1)
+ -E:hover	匹配鼠标悬停智商的e元素
+ -E:focus	匹配获得焦点的e元素
+5. 伪元素选择器
+ -E::first-line	匹配E元素的第一行
+ -E::first-letter	匹配E元素的第一个字母
+ -E::before	在e元素之前插入生成的内容
+ -E::after	在e元素之后插入生成的内容
+#选择器的优先级是怎样的?对于复杂场景如何计算优先级？
+  p优先级从高到低分别是：
+1. 在属性后面使用 !important 会覆盖页面内任何位置定义的元素样式
+2. 作为style属性写在元素标签上的内联样式
+3. Id选择器
+4. 类选择器
+5. 伪类选择器
+6. 属性选择器
+7. 标签选择器
+8. 通配符选择器
+9. 浏览器自定义
+#复杂场景时候：
+ -行内样式 <div style="xxx"></div> ==> a
+ -ID 选择器 ==> b
+ -类，属性选择器和伪类选择器 ==> c
+ -标签选择器、伪元素 ==> d 
+ p abcd优先级依次降低
+#a:link, a:hover, a:active, a:visited 的顺序是怎样的？ 为什么？
+  p首先这四个都属于伪类选择器，优先级顺序是一样的，考虑到会覆盖，所以要显示不同的效果其顺序应该是
+#以下选择器分别是什么意思?
+-#header{             匹配id为header的元素
+-.header{             匹配class为header的元素
+-.header .logo{         class为header的子元素class为logo的元素
+-.header.mobile{ class   同时包含header和mobile的元素
+-.header p, .header h3{  同时匹配class为header下的元素p和h3
+-#header .nav>li{       匹配id值为header下class值为nav元素中的li元素
+-#header a:hover{      为id值为header中的a元素指定鼠标悬停在其上方的样式
+-#header .logo~p{      匹配id值为header的子元素中class为logo元素之后的同级元素
+-#header input[type="text"]{ 在id为header的子元素中寻找type属性为“text”的input元素
+6．解析输出样式原因
+···
+<style>
+.item1:first-child{
+  color: red;
+}
+.item1:first-of-type{
+  background: blue;
+} 为
+</style>
+ <div class="ct">
+   <p class="item1">aa</p>
+   <h3 class="item1">bb</h3>
+   <h3 class="item1">ccc</h3>
+ </div>
+ ···
+ · .item1:first-child{color: red;} ·
+p指定class为item1的子元素中第一个元素的颜色为红色
+· .item1:first-of-type{background: blue} ·
+p父元素中每一类元素的第一个类名为item1的元素的背景色为蓝色，（div中有p、h3两类标签，每一类的第一个类名为item1的元素背景变为蓝色，所以：内容为aa和bb被选中变为蓝
+
